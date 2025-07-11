@@ -1,3 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Cascata vertical (não usada nesse momento, mas pode ser útil depois) */
+@keyframes moveBackground {
+  0% {
+    background-position: center top;
+  }
+  100% {
+    background-position: center bottom;
+  }
+}
+.bg-cascata {
+  animation: moveBackground 8s ease-in-out infinite alternate;
+}
+
+/* Gato andando para os lados */
+@keyframes walkSideways {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(60px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.walking-cat {
+  animation: walkSideways 6s ease-in-out infinite;
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+}
+
+/* Movimento contínuo lateral (plano de fundo horizontal) */
+@keyframes scrollBg {
+  0% { background-position: left center; }
+  100% { background-position: right center; }
+}
