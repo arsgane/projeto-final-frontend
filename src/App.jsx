@@ -3,12 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 
 // Importa os componentes visuais do sistema
 import Navbar from './components/Navbar';
-import Footer from './components/Footer'; // ⬅️ Novo import do rodapé
+import Footer from './components/Footer';
 
-// Importa as páginas principais do sistema
+// Importa as páginas principais ativas
 import Home from './pages/Home';
 import Servicos from './pages/Servicos';
-import Login from './pages/desativadas/Login';
+import Login from './pages/Login'; // ✅ Corrigido: agora está fora da pasta "desativadas"
 
 // Páginas desativadas por enquanto (manter para uso futuro)
 // import Pets from './pages/desativadas/Pets';
@@ -18,25 +18,26 @@ import Login from './pages/desativadas/Login';
 // Função principal da aplicação
 function App() {
   return (
-    // Container principal com flexbox em coluna para manter o footer no final da página
+    // Container principal com flexbox em coluna para manter o footer no fim da tela
     <div className="min-h-screen flex flex-col bg-white">
 
-      {/* Navbar no topo do site */}
+      {/* Barra de navegação no topo */}
       <Navbar />
 
-      {/* Conteúdo principal da página com expansão automática para ocupar o espaço disponível */}
+      {/* Conteúdo principal da aplicação */}
       <main className="flex-grow p-6">
         <Routes>
-          {/* Rota para a página inicial */}
+          {/* Página inicial */}
           <Route path="/" element={<Home />} />
 
-          {/* Rota para a página de Serviços */}
+          {/* Página de serviços */}
           <Route path="/servicos" element={<Servicos />} />
 
-          {/* Rota para a página de Login */}
+          {/* Página de login/cadastro */}
           <Route path="/login" element={<Login />} />
 
-          {/* Rotas desativadas temporariamente (rever após login/autenticação)
+          {/* Rotas futuras (desativadas) */}
+          {/*
           <Route path="/pets" element={<Pets />} />
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/agendamentos" element={<Agendamentos />} />
@@ -44,11 +45,11 @@ function App() {
         </Routes>
       </main>
 
-      {/* Rodapé no final da página */}
+      {/* Rodapé fixo no final */}
       <Footer />
     </div>
   );
 }
 
-// Exporta o componente para ser usado no main.jsx
+// Exporta o componente principal da aplicação
 export default App;

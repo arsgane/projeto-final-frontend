@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Cascata vertical (não usada nesse momento, mas pode ser útil depois) */
+/* -------------------- ANIMAÇÕES PERSONALIZADAS -------------------- */
+
+/* 🎞️ Animação de fundo em cascata vertical */
 @keyframes moveBackground {
   0% {
     background-position: center top;
@@ -15,7 +17,7 @@
   animation: moveBackground 8s ease-in-out infinite alternate;
 }
 
-/* Gato andando para os lados */
+/* 🐾 Gato andando suavemente para os lados */
 @keyframes walkSideways {
   0% {
     transform: translateX(0);
@@ -29,11 +31,45 @@
 }
 .walking-cat {
   animation: walkSideways 6s ease-in-out infinite;
-  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
 }
 
-/* Movimento contínuo lateral (plano de fundo horizontal) */
+/* ↔️ Fundo com movimento contínuo horizontal (caso queira usar em background) */
 @keyframes scrollBg {
-  0% { background-position: left center; }
-  100% { background-position: right center; }
+  0% {
+    background-position: left center;
+  }
+  100% {
+    background-position: right center;
+  }
+}
+
+/* ✨ Fade com leve escala ao aparecer (cards e seções) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out both;
+}
+
+/* -------------------- PLANO DE FUNDO PADRÃO SUAVE -------------------- */
+
+/* ☁️ Fundo com imagem discreta e elegante (logo em baixa opacidade) */
+.bg-home-light {
+  background-image: url('/src/assets/logopet.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.06;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
