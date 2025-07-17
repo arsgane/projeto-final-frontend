@@ -14,7 +14,7 @@ Este é o **front-end do sistema PetShop**, uma aplicação moderna e responsiva
 
 ---
 
-## 🎯 Funcionalidades
+## 🎯 Funcionalidades Gerais
 
 - ✅ Página inicial com imagem animada, gradiente suave e call-to-action  
 - ✅ Lista de serviços interativa com detalhes e botões de redirecionamento  
@@ -26,13 +26,27 @@ Este é o **front-end do sistema PetShop**, uma aplicação moderna e responsiva
 
 ---
 
+## 🛒 Versão 1.1 – Carrinho com Produtos e Serviços
+
+> Atualizado em **julho de 2025**
+
+- Adição completa de **carrinho inteligente** integrado ao contexto global  
+- Itens adicionados aparecem **individualmente**, mesmo se forem iguais  
+- Suporte à **seleção dinâmica** de variações de serviço (ex: porte do animal)  
+- Preço calculado com precisão; subtotal e total exibidos com clareza  
+- Design moderno e botão de carrinho com **ícone SVG animado** e contador  
+- Integração pronta para back-end (envio de pedidos e histórico futuro)
+
+---
+
 ## 📁 Estrutura do Projeto
 
 ```
 src/
 ├── assets/          # Imagens e GIFs utilizados nas páginas
-├── components/      # Componentes reutilizáveis (caso necessário)
-├── pages/           # Páginas principais: Home, Serviços, Login
+├── components/      # Componentes reutilizáveis (Navbar, etc)
+├── context/         # CarrinhoContext com gerenciamento global
+├── pages/           # Páginas principais: Home, Produtos, Serviços, Carrinho, Login
 ├── App.jsx          # Componente principal que organiza as rotas
 ├── main.jsx         # Ponto de entrada da aplicação
 ├── index.css        # Estilos globais + animações personalizadas
@@ -90,7 +104,6 @@ npm run preview
 
 Este projeto é de autoria original e está protegido por direitos autorais.  
 Sua reprodução, modificação ou distribuição **não é autorizada sem consentimento prévio**.  
-Compartilhamentos só são permitidos mediante autorização expressa do autor.  
-Conto com sua compreensão e respeito. 💙
+Compartilhamentos só são permitidos mediante autorização expressa do autor. 💙
 
 > Repositório oficial: [github.com/arsgane/projeto-final-frontend](https://github.com/arsgane/projeto-final-frontend)
