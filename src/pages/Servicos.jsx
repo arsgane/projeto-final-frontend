@@ -10,12 +10,18 @@ import tosa from "../assets/tosa1.jpg";
 import vacina from "../assets/vacina1.jpg";
 import hotel from "../assets/hotel1.jpg";
 
+// ✅ Importa o contexto do carrinho
+import { useCarrinho } from "../context/CarrinhoContext";
+
 function Servicos() {
   const location = useLocation();
   const [servicoAberto, setServicoAberto] = useState(null);
   const [fadeVisible, setFadeVisible] = useState(true);
+  const [selecoes, setSelecoes] = useState({}); // ✅ Guarda seleção de cada serviço
 
-  // Lista dos serviços com nome, imagem, preços e tooltip
+  const { adicionarProduto } = useCarrinho();
+
+  // Lista dos serviços com nome, imagem, preços e descrição
   const servicos = [
     {
       nome: "Banho",
@@ -74,15 +80,15 @@ function Servicos() {
     },
   ];
 
-  // Se vier da Home com state, abre o serviço correspondente
+  // Abre automaticamente serviço ao navegar vindo da Home
   useEffect(() => {
     if (location.state?.servico) {
-      const index = servicos.findIndex(s => s.nome === location.state.servico);
+      const index = servicos.findIndex((s) => s.nome === location.state.servico);
       if (index !== -1) setServicoAberto(index);
     }
   }, [location.state]);
 
-  // Fecha com animação suave
+  // Alternar serviço aberto
   const handleToggleServico = (index) => {
     if (servicoAberto === index) {
       setFadeVisible(false);
@@ -96,9 +102,13 @@ function Servicos() {
     }
   };
 
+  // Atualiza seleção do combo de preço
+  const handleSelecao = (indexServico, valor) => {
+    setSelecoes({ ...selecoes, [indexServico]: valor });
+  };
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-100 overflow-hidden">
-
       {/* Título da página */}
       <div className="text-center pt-12 animate-fade-in">
         <h1 className="text-4xl font-bold text-blue-800 mb-10">
@@ -108,50 +118,80 @@ function Servicos() {
 
       {/* Grade de serviços */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 px-6 pb-20 justify-items-center animate-fade-in">
-        {servicos.map((item, index) => (
-          <div key={index} className="flex flex-col items-center">
-            {/* Círculo com imagem animada */}
-            <div
-              className="w-40 h-40 rounded-full overflow-hidden shadow-lg border-4 border-blue-400 animate-pulse hover:scale-105 transition duration-300 cursor-pointer"
-              title={item.descricao}
-              onClick={() => handleToggleServico(index)}
-            >
-              <img
-                src={item.img}
-                alt={item.nome}
-                className="w-full h-full object-cover"
-              />
-            </div>
+        {servicos.map((item, index) => {
+          const selecao = selecoes[index] || item.preco[0];
+          const precoFinal = parseFloat(
+  selecao.replace(/[^\d,]/g, "").replace(",", ".")
+);
 
-            {/* Nome do serviço */}
-            <p className="mt-3 text-center text-lg text-gray-800 font-semibold">
-              {item.nome}
-            </p>
-
-            {/* Card com preços */}
-            {servicoAberto === index && (
+          return (
+            <div key={index} className="flex flex-col items-center">
+              {/* Imagem redonda com hover */}
               <div
-                className={`mt-4 bg-white bg-opacity-90 backdrop-blur-md p-4 rounded-lg shadow-inner w-64 text-sm text-gray-700 transform transition-all duration-500
-                ${fadeVisible ? 'opacity-100 scale-100 animate-fade-in' : 'opacity-0 scale-95'}`}
+                className="w-40 h-40 rounded-full overflow-hidden shadow-lg border-4 border-blue-400 animate-pulse hover:scale-105 transition duration-300 cursor-pointer"
+                title={item.descricao}
+                onClick={() => handleToggleServico(index)}
               >
-                <h3 className="text-md font-bold mb-2">Preços:</h3>
-                <ul className="list-disc list-inside space-y-1">
-                  {item.preco.map((linha, idx) => (
-                    <li key={idx}>{linha}</li>
-                  ))}
-                </ul>
-
-                {/* Botão de agendamento */}
-                <button
-                  className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-                  onClick={() => window.location.href = "/login"}
-                >
-                  Agendar agora
-                </button>
+                <img
+                  src={item.img}
+                  alt={item.nome}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            )}
-          </div>
-        ))}
+
+              {/* Nome do serviço */}
+              <p className="mt-3 text-center text-lg text-gray-800 font-semibold">
+                {item.nome}
+              </p>
+
+              {/* Card aberto com preço, agendamento, combo e botão */}
+              {servicoAberto === index && (
+                <div
+                  className={`mt-4 bg-white bg-opacity-90 backdrop-blur-md p-4 rounded-lg shadow-inner w-64 text-sm text-gray-700 transform transition-all duration-500
+                  ${fadeVisible ? "opacity-100 scale-100 animate-fade-in" : "opacity-0 scale-95"}`}
+                >
+                  <h3 className="text-md font-bold mb-2">Escolha uma opção:</h3>
+
+                  {/* Combobox de preços */}
+                  <select
+                    value={selecao}
+                    onChange={(e) => handleSelecao(index, e.target.value)}
+                    className="w-full mb-4 px-3 py-2 rounded border border-gray-300 focus:outline-none"
+                  >
+                    {item.preco.map((op, idx) => (
+                      <option key={idx} value={op}>
+                        {op}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Botão Agendar */}
+                  <button
+                    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+                    onClick={() => window.location.href = "/login"}
+                  >
+                    Agendar agora
+                  </button>
+
+                  {/* ✅ Botão Adicionar ao Carrinho com seleção */}
+                  <button
+                    onClick={() =>
+                      adicionarProduto({
+                        id: Date.now() + Math.random(),
+                        nome: `${item.nome} (${selecao.split(":")[0]})`,
+                        preco: precoFinal,
+                        imagem: item.img,
+                      })
+                    }
+                    className="mt-2 w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
