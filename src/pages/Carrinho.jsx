@@ -1,4 +1,5 @@
 // src/pages/Carrinho.jsx
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -77,7 +78,6 @@ function Carrinho() {
         await axios.delete("http://localhost:5000/carrinho/limpar", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        // Após limpar, busca novamente o carrinho no backend para garantir sincronização
         const res = await axios.get("http://localhost:5000/carrinho", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -118,21 +118,7 @@ function Carrinho() {
     }
 
     if (metodoPagamento === "pix") {
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/pagamento/finalizar-compra",
-          {},
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        console.log("Pagamento simulado:", response.data);
-        limparTudo();
-        navigate("/pagamento");
-      } catch (err) {
-        console.error(err);
-        alert("Erro ao processar pagamento via Pix.");
-      }
+      navigate("/pagamento"); // 🔄 Vai para a tela de pagamento, sem limpar ainda
     }
   };
 
@@ -151,25 +137,15 @@ function Carrinho() {
       ) : (
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6 space-y-6">
           {itens.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between border-b pb-4"
-            >
+            <div key={item.id} className="flex items-center justify-between border-b pb-4">
               <div>
                 <h2 className="text-lg font-bold text-blue-800">{item.nome}</h2>
                 {item.tipo && (
-                  <p className="text-sm text-gray-600 capitalize">
-                    Tipo: {item.tipo}
-                  </p>
+                  <p className="text-sm text-gray-600 capitalize">Tipo: {item.tipo}</p>
                 )}
-                <p className="text-sm text-gray-700">
-                  Preço: R$ {item.preco.toFixed(2)}
-                </p>
-                <p className="text-sm font-semibold text-green-600">
-                  Quantidade: {item.quantidade}
-                </p>
+                <p className="text-sm text-gray-700">Preço: R$ {item.preco.toFixed(2)}</p>
+                <p className="text-sm font-semibold text-green-600">Quantidade: {item.quantidade}</p>
               </div>
-
               <button
                 onClick={() => remover(item.id)}
                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
@@ -185,9 +161,7 @@ function Carrinho() {
             </h2>
 
             <div>
-              <h3 className="text-lg font-semibold text-blue-800">
-                Método de Pagamento:
-              </h3>
+              <h3 className="text-lg font-semibold text-blue-800">Método de Pagamento:</h3>
 
               <select
                 value={metodoPagamento}

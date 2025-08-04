@@ -8,12 +8,32 @@ function Pagamento() {
   const [qrCode, setQrCode] = useState(null);
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
 
-  // 📤 Faz a simulação do pagamento e exibe o QR Code
-  const realizarPagamento = async () => {
+  const limparCarrinhoBackend = async (token) => {
     try {
-      const token = localStorage.getItem("token");
+      await axios.delete("http://localhost:5000/carrinho/limpar", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("🧹 Carrinho limpo após pagamento.");
+    } catch (err) {
+      console.error("⚠️ Erro ao limpar carrinho:", err);
+    }
+  };
+
+  // 📤 Função que simula o pagamento e exibe o QR code
+  const realizarPagamento = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setErro("Você precisa estar logado para simular o pagamento.");
+      return;
+    }
+
+    try {
+      setCarregando(true);
+      console.log("🔐 Token enviado:", token);
 
       const response = await axios.post(
         "http://localhost:5000/pagamento/finalizar-compra",
@@ -25,12 +45,26 @@ function Pagamento() {
         }
       );
 
+      console.log("💬 Resposta completa:", response.data);
+
       setMensagem(response.data.mensagem);
       setQrCode(`data:image/png;base64,${response.data.qr_code_base64}`);
       setErro("");
+
+      // ✅ Limpa carrinho depois do pagamento bem-sucedido
+      await limparCarrinhoBackend(token);
     } catch (err) {
-      console.error(err);
-      setErro("Erro ao simular pagamento.");
+      console.error("❌ Erro ao simular pagamento:", err);
+
+      if (err.response) {
+        console.log("🔴 Status:", err.response.status);
+        console.log("🔴 Dados recebidos do backend:", err.response.data);
+        setErro(err.response.data?.mensagem || "Erro ao simular pagamento.");
+      } else {
+        setErro("Erro ao simular pagamento.");
+      }
+    } finally {
+      setCarregando(false);
     }
   };
 
@@ -38,20 +72,20 @@ function Pagamento() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-100 p-6">
       <h1 className="text-3xl font-bold mb-6 text-blue-800">Pagamento</h1>
 
-      {/* Botão que aciona o backend para gerar o QR code */}
       <button
         onClick={realizarPagamento}
-        className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition mb-4"
+        className={`${
+          carregando ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+        } text-white px-6 py-2 rounded transition mb-4`}
+        disabled={carregando}
       >
-        Simular Pagamento
+        {carregando ? "Processando..." : "Simular Pagamento"}
       </button>
 
-      {/* Exibe mensagem de sucesso */}
       {mensagem && (
         <p className="text-green-700 font-semibold mb-4">{mensagem}</p>
       )}
 
-      {/* Exibe QR code */}
       {qrCode && (
         <img
           src={qrCode}
@@ -60,10 +94,8 @@ function Pagamento() {
         />
       )}
 
-      {/* Exibe mensagem de erro */}
       {erro && <p className="text-red-600 mt-4">{erro}</p>}
 
-      {/* Botão para voltar à dashboard após pagamento */}
       <button
         onClick={() => navigate("/cliente-dashboard")}
         className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"

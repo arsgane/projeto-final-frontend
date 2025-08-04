@@ -1,5 +1,6 @@
 // src/pages/Home.jsx
 import React, { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCarrinho } from '../context/CarrinhoContext'; // ✅ Importa o contexto do carrinho
 
@@ -143,7 +144,34 @@ useEffect(() => {
 
                   {/* ✅ Botão Adicionar ao Carrinho */}
                   <button
-                    onClick={() => adicionarProduto(produto)}
+                    onClick={async () => {
+                      const token = localStorage.getItem("token");
+                      if (token) {
+                        try {
+                          await axios.post("http://localhost:5000/carrinho", {
+        nome: produto.nome,
+        tipo: "produto",
+        preco: produto.preco,
+        quantidade: 1,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      adicionarProduto({
+        nome: produto.nome,
+        preco: produto.preco,
+        tipo: "produto",
+        quantidade: 1
+      });
+      alert("Produto adicionado com sucesso!");
+                        } catch (err) {
+                          console.error("Erro ao adicionar produto:", err);
+                          alert("Erro ao adicionar produto ao carrinho.");
+                        }
+                      } else {
+                        adicionarProduto(produto);
+                        alert("Produto adicionado ao carrinho!");
+                      }
+                    }}
                     className="mt-2 bg-green-600 hover:bg-green-700 text-white py-1 px-3 rounded text-sm transition"
                   >
                     Carrinho
