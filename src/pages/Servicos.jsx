@@ -17,7 +17,7 @@ function Servicos() {
   const location = useLocation();
   const [servicoAberto, setServicoAberto] = useState(null);
   const [fadeVisible, setFadeVisible] = useState(true);
-  const [selecoes, setSelecoes] = useState({}); // ✅ Guarda seleção de cada serviço
+  const [selecoes, setSelecoes] = useState({}); // Guarda seleção de cada serviço
 
   const { adicionarProduto } = useCarrinho();
 
@@ -121,8 +121,8 @@ function Servicos() {
         {servicos.map((item, index) => {
           const selecao = selecoes[index] || item.preco[0];
           const precoFinal = parseFloat(
-  selecao.replace(/[^\d,]/g, "").replace(",", ".")
-);
+            selecao.replace(/[^\d,]/g, "").replace(",", ".")
+          );
 
           return (
             <div key={index} className="flex flex-col items-center">
@@ -165,15 +165,15 @@ function Servicos() {
                     ))}
                   </select>
 
-                  {/* Botão Agendar */}
+                  {/* Botão Agendar agora - corrigido */}
                   <button
                     className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-                    onClick={() => window.location.href = "/login"}
+                    onClick={() => window.location.href = "/login-cliente"}
                   >
                     Agendar agora
                   </button>
 
-                  {/* ✅ Botão Adicionar ao Carrinho com seleção */}
+                  {/* Botão Adicionar ao Carrinho com seleção e tipo */}
                   <button
                     onClick={() =>
                       adicionarProduto({
@@ -181,6 +181,7 @@ function Servicos() {
                         nome: `${item.nome} (${selecao.split(":")[0]})`,
                         preco: precoFinal,
                         imagem: item.img,
+                        tipo: "servico" // <-- ESSENCIAL para backend
                       })
                     }
                     className="mt-2 w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"

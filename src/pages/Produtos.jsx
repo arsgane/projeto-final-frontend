@@ -19,20 +19,20 @@ import escova from "../assets/produtos/escovadepelo.png";
 // ✅ Importação do contexto do carrinho
 import { useCarrinho } from "../context/CarrinhoContext";
 
-// ✅ Lista de produtos com dados
+// ✅ Lista de produtos com dados e campo 'tipo'
 const produtos = [
-  { id: 1, nome: "Ração Golden", preco: 119.9, imagem: racao1 },
-  { id: 2, nome: "Coleira Antipulgas", preco: 69.9, imagem: coleira },
-  { id: 3, nome: "Shampoo Pet Clean", preco: 24.9, imagem: shampoo },
-  { id: 4, nome: "Brinquedo Mordedor", preco: 34.9, imagem: mordedor },
-  { id: 5, nome: "Ração Whiskas", preco: 59.9, imagem: racao2 },
-  { id: 6, nome: "Arranhador para Gatos", preco: 99.9, imagem: arranhador },
-  { id: 7, nome: "Comedouro Inox", preco: 39.9, imagem: comedouro },
-  { id: 8, nome: "Areia Higiênica", preco: 27.5, imagem: areia },
-  { id: 9, nome: "Tapete Higiênico", preco: 60.0, imagem: tapete },
-  { id: 10, nome: "Cama Pet", preco: 119.9, imagem: cama },
-  { id: 11, nome: "Perfume Lavanda", preco: 22.9, imagem: perfume },
-  { id: 12, nome: "Escova de Pelos", preco: 28.9, imagem: escova }
+  { id: 1, nome: "Ração Golden", preco: 119.9, tipo: "produto", imagem: racao1 },
+  { id: 2, nome: "Coleira Antipulgas", preco: 65.0, tipo: "produto", imagem: coleira },
+  { id: 3, nome: "Shampoo Pet Clean", preco: 24.9, tipo: "produto", imagem: shampoo },
+  { id: 4, nome: "Brinquedo Mordedor", preco: 34.9, tipo: "produto", imagem: mordedor },
+  { id: 5, nome: "Ração Whiskas", preco: 59.9, tipo: "produto", imagem: racao2 },
+  { id: 6, nome: "Arranhador para Gatos", preco: 99.9, tipo: "produto", imagem: arranhador },
+  { id: 7, nome: "Comedouro Inox", preco: 39.9, tipo: "produto", imagem: comedouro },
+  { id: 8, nome: "Areia Higiênica", preco: 25.0, tipo: "produto", imagem: areia },
+  { id: 9, nome: "Tapete Higiênico", preco: 60.0, tipo: "produto", imagem: tapete },
+  { id: 10, nome: "Cama Pet", preco: 119.9, tipo: "produto", imagem: cama },
+  { id: 11, nome: "Perfume Lavanda", preco: 22.9, tipo: "produto", imagem: perfume },
+  { id: 12, nome: "Escova de Pelos", preco: 28.9, tipo: "produto", imagem: escova }
 ];
 
 function Produtos() {

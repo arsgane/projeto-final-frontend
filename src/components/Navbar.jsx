@@ -1,76 +1,186 @@
 // src/components/Navbar.jsx
-import { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { ShoppingCart } from "lucide-react";
 import { useCarrinho } from "../context/CarrinhoContext";
-import { ShoppingCart } from 'lucide-react'; // ✅ Ícone SVG do carrinho
 
 function Navbar() {
+  const navigate = useNavigate();
   const [menuAberto, setMenuAberto] = useState(false);
+  const [estaLogado, setEstaLogado] = useState(false);
+  const [tipoUsuario, setTipoUsuario] = useState("");
   const { quantidadeTotal } = useCarrinho();
 
-  const linkEstilo = ({ isActive }) =>
-    isActive
-      ? 'bg-blue-100 text-blue-900 font-semibold px-3 py-1 rounded transition'
-      : 'text-white hover:bg-blue-500 px-3 py-1 rounded transition';
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const tipo = localStorage.getItem("tipoUsuario");
+    setEstaLogado(!!token);
+    setTipoUsuario(tipo);
+  }, [localStorage.getItem("token"), localStorage.getItem("tipoUsuario"), quantidadeTotal]);
+
+  const deslogar = () => {
+    localStorage.clear();
+    setEstaLogado(false);
+    navigate("/");
+  };
+
+  const linkEstilo = "text-white hover:text-yellow-300 transition font-medium";
 
   return (
-    <nav className="bg-blue-600 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-white">Petshop System</h1>
-
-        {/* Botão hambúrguer mobile */}
-        <button
-          className="md:hidden text-white text-2xl"
-          onClick={() => setMenuAberto(!menuAberto)}
-          aria-label="Abrir menu"
+    <nav className="bg-blue-700 text-white p-4 shadow-md">
+      <div className="container mx-auto flex justify-between items-center">
+        <div
+          className="text-2xl font-bold cursor-pointer"
+          onClick={() => navigate("/")}
         >
-          ☰
-        </button>
+          Petshop
+        </div>
 
-        {/* Menu desktop */}
-        <div className="hidden md:flex space-x-4 items-center">
-          <NavLink to="/" className={linkEstilo}>Início</NavLink>
-          <NavLink to="/servicos" className={linkEstilo}>Serviços</NavLink>
-          <NavLink to="/produtos" className={linkEstilo}>Produtos</NavLink>
-          <NavLink to="/login" className={linkEstilo}>Login</NavLink>
+        <div className="hidden md:flex gap-6 items-center">
+          <NavLink to="/" className={linkEstilo}>
+            Início
+          </NavLink>
 
-          {/* ✅ Carrinho com ícone SVG estiloso */}
-          <Link
-            to="/carrinho"
-            className="relative text-white hover:text-yellow-300 transition"
+          {!estaLogado && (
+            <NavLink to="/login-cliente" className={linkEstilo}>
+              Login
+            </NavLink>
+          )}
+
+          <NavLink to="/produtos" className={linkEstilo}>
+            Produtos
+          </NavLink>
+          <NavLink to="/servicos" className={linkEstilo}>
+            Serviços
+          </NavLink>
+
+          {estaLogado && tipoUsuario === "admin" && (
+            <NavLink to="/simplificado" className={linkEstilo}>
+              Modo Simplificado
+            </NavLink>
+          )}
+
+          {estaLogado && (
+            <>
+              <NavLink
+                to={tipoUsuario === "admin" ? "/admin" : "/cliente-dashboard"}
+                className={linkEstilo}
+              >
+                Painel
+              </NavLink>
+              <button onClick={deslogar} className={linkEstilo}>
+                Sair
+              </button>
+            </>
+          )}
+
+          <div
+            className="relative cursor-pointer"
+            onClick={() => navigate("/carrinho")}
           >
-            <ShoppingCart size={28} strokeWidth={2.5} />
+            <ShoppingCart />
             {quantidadeTotal > 0 && (
-              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 py-0.5 rounded-full">
                 {quantidadeTotal}
               </span>
             )}
-          </Link>
+          </div>
         </div>
+
+        {/* Menu mobile (hambúrguer) */}
+        <button
+          className="md:hidden focus:outline-none"
+          onClick={() => setMenuAberto(!menuAberto)}
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            {menuAberto ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
+          </svg>
+        </button>
       </div>
 
-      {/* Menu mobile dropdown */}
+      {/* Menu Mobile */}
       {menuAberto && (
-        <div className="md:hidden px-4 pb-4 space-y-2">
-          <NavLink to="/" className={linkEstilo} onClick={() => setMenuAberto(false)}>Início</NavLink>
-          <NavLink to="/servicos" className={linkEstilo} onClick={() => setMenuAberto(false)}>Serviços</NavLink>
-          <NavLink to="/produtos" className={linkEstilo} onClick={() => setMenuAberto(false)}>Produtos</NavLink>
-          <NavLink to="/login" className={linkEstilo} onClick={() => setMenuAberto(false)}>Login</NavLink>
+        <div className="md:hidden flex flex-col gap-4 mt-4 px-4">
+          <NavLink to="/" className={linkEstilo} onClick={() => setMenuAberto(false)}>
+            Início
+          </NavLink>
 
-          {/* Carrinho no mobile também */}
-          <Link
-            to="/carrinho"
-            className="flex items-center gap-2 text-white hover:text-yellow-300 transition"
-            onClick={() => setMenuAberto(false)}
+          {!estaLogado && (
+            <NavLink
+              to="/login-cliente"
+              className={linkEstilo}
+              onClick={() => setMenuAberto(false)}
+            >
+              Login
+            </NavLink>
+          )}
+
+          <NavLink to="/produtos" className={linkEstilo} onClick={() => setMenuAberto(false)}>
+            Produtos
+          </NavLink>
+          <NavLink to="/servicos" className={linkEstilo} onClick={() => setMenuAberto(false)}>
+            Serviços
+          </NavLink>
+
+          {estaLogado && tipoUsuario === "admin" && (
+            <NavLink
+              to="/simplificado"
+              className={linkEstilo}
+              onClick={() => setMenuAberto(false)}
+            >
+              Modo Simplificado
+            </NavLink>
+          )}
+
+          {estaLogado && (
+            <>
+              <NavLink
+                to={tipoUsuario === "admin" ? "/admin" : "/cliente-dashboard"}
+                className={linkEstilo}
+                onClick={() => setMenuAberto(false)}
+              >
+                Painel
+              </NavLink>
+              <button onClick={deslogar} className={linkEstilo}>
+                Sair
+              </button>
+            </>
+          )}
+
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => {
+              navigate("/carrinho");
+              setMenuAberto(false);
+            }}
           >
-            <ShoppingCart size={24} />
-            Carrinho
+            <ShoppingCart />
             {quantidadeTotal > 0 && (
-              <span className="ml-1 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              <span className="bg-red-600 text-xs px-2 py-0.5 rounded-full">
                 {quantidadeTotal}
               </span>
             )}
-          </Link>
+          </div>
         </div>
       )}
     </nav>

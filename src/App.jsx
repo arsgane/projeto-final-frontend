@@ -1,55 +1,100 @@
-// Importa os componentes de roteamento do React Router
-import { Routes, Route } from 'react-router-dom';
+// src/App.jsx
 
-// Importa os componentes visuais do sistema
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
-// Importa as páginas principais ativas
 import Home from './pages/Home';
 import Servicos from './pages/Servicos';
-import Login from './pages/Login'; // ✅ Corrigido: agora está fora da pasta "desativadas"
+import LoginCliente from './pages/LoginCliente';
+import CadastroCliente from './pages/CadastroCliente';
+import Produtos from './pages/Produtos';
+import ProdutoDetalhes from './pages/ProdutoDetalhes';
+import Carrinho from './pages/Carrinho';
+import Pets from './pages/Pets';
+import Clientes from './pages/Clientes';
+import Pagamento from './pages/Pagamento';
+import Simplificado from './pages/simplificado';
 
-// Páginas desativadas por enquanto (manter para uso futuro)
-// import Pets from './pages/desativadas/Pets';
-// import Clientes from './pages/desativadas/Clientes';
-// import Agendamentos from './pages/desativadas/Agendamentos';
+import DashboardCliente from './pages/DashboardCliente';
+import DashboardAdmin from './pages/DashboardAdmin';
 
-// Função principal da aplicação
+import ProtectedRoute from './components/ProtectedRoute';
+
 function App() {
   return (
-    // Container principal com flexbox em coluna para manter o footer no fim da tela
     <div className="min-h-screen flex flex-col bg-white">
-
-      {/* Barra de navegação no topo */}
       <Navbar />
+      <Toaster position="top-center" />
 
-      {/* Conteúdo principal da aplicação */}
       <main className="flex-grow p-6">
         <Routes>
-          {/* Página inicial */}
+          {/* 🌐 ROTAS PÚBLICAS */}
           <Route path="/" element={<Home />} />
-
-          {/* Página de serviços */}
           <Route path="/servicos" element={<Servicos />} />
+          <Route path="/produtos" element={<Produtos />} />
+          <Route path="/produtos/:id" element={<ProdutoDetalhes />} />
+          <Route path="/login-cliente" element={<LoginCliente />} />
+          <Route path="/cadastro-cliente" element={<CadastroCliente />} />
+          <Route path="/simplificado" element={<Simplificado />} />
 
-          {/* Página de login/cadastro */}
-          <Route path="/login" element={<Login />} />
+          {/* 🔓 Carrinho acessível sem login */}
+          <Route path="/carrinho" element={<Carrinho />} />
 
-          {/* Rotas futuras (desativadas) */}
-          {/*
-          <Route path="/pets" element={<Pets />} />
-          <Route path="/clientes" element={<Clientes />} />
-          <Route path="/agendamentos" element={<Agendamentos />} />
-          */}
+          {/* 🔒 ROTAS PROTEGIDAS - CLIENTE */}
+          <Route
+            path="/pets"
+            element={
+              <ProtectedRoute role="cliente">
+                <Pets />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pagamento"
+            element={
+              <ProtectedRoute role="cliente">
+                <Pagamento />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cliente-dashboard"
+            element={
+              <ProtectedRoute role="cliente">
+                <DashboardCliente />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 🔒 ROTAS PROTEGIDAS - ADMIN */}
+          <Route
+            path="/clientes"
+            element={
+              <ProtectedRoute role="admin">
+                <Clientes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="admin">
+                <DashboardAdmin />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 🔄 ROTA GENÉRICA */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
 
-      {/* Rodapé fixo no final */}
       <Footer />
     </div>
   );
 }
 
-// Exporta o componente principal da aplicação
 export default App;

@@ -1,5 +1,5 @@
 // src/pages/Home.jsx
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCarrinho } from '../context/CarrinhoContext'; // ✅ Importa o contexto do carrinho
 
@@ -40,6 +40,11 @@ function Home() {
   const navigate = useNavigate();
   const { adicionarProduto } = useCarrinho(); // ✅ Usa o carrinho
   const [servicoAtivo, setServicoAtivo] = useState(null);
+  const [estaLogado, setEstaLogado] = useState(false);
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  setEstaLogado(!!token);
+}, []);
   const carrosselRef = useRef(null);
 
   const servicos = [
@@ -67,24 +72,28 @@ function Home() {
 
       <div className="relative z-10 text-gray-800">
 
-        {/* Hero */}
-        <section className="min-h-[80vh] flex flex-col md:flex-row items-center justify-center px-6 md:px-16">
-          <div className="md:w-1/2 flex justify-center mb-8 md:mb-0">
-            <img src={dogWelcomeGif} alt="Dog animado" className="w-96 md:w-[600px]" />
-          </div>
-          <div className="md:w-1/2 text-center md:text-left animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold text-blue-700 mb-4">Bem-vindo ao Petshop</h1>
-            <p className="text-lg text-gray-700 mb-6">
-              Cuidando do seu pet com amor, carinho e profissionalismo. Agende agora!
-            </p>
-            <button
-              onClick={() => navigate('/login')}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded shadow-md transition-transform hover:scale-105"
-            >
-              Login
-            </button>
-          </div>
-        </section>
+        {/* Hero */} 
+<section className="min-h-[80vh] flex flex-col md:flex-row items-center justify-center px-6 md:px-16">
+  <div className="md:w-1/2 flex justify-center mb-8 md:mb-0">
+    <img src={dogWelcomeGif} alt="Dog animado" className="w-96 md:w-[600px]" />
+  </div>
+  <div className="md:w-1/2 text-center md:text-left animate-fade-in">
+    <h1 className="text-4xl md:text-5xl font-bold text-blue-700 mb-4">Bem-vindo ao Petshop</h1>
+    <p className="text-lg text-gray-700 mb-6">
+      Cuidando do seu pet com amor, carinho e profissionalismo. Agende agora!
+    </p>
+
+    {/* ✅ Corrigido: agora leva ao login funcional */}
+    {!estaLogado && (
+  <button
+    onClick={() => navigate('/login-cliente')}
+    className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded shadow-md transition-transform hover:scale-105"
+  >
+    Login
+  </button>
+)}
+  </div>
+</section>
 
         {/* Produtos */}
         <section className="pt-4 pb-24 px-6 text-center animate-fade-up">

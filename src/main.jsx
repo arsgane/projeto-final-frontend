@@ -7,18 +7,23 @@ import ReactDOM from 'react-dom/client'
 // Importa o componente de roteamento do React Router
 import { BrowserRouter } from 'react-router-dom'
 
-// Importa o componente principal da aplicação (que conterá as rotas e a Navbar)
+// Importa o componente principal da aplicação
 import App from './App.jsx'
 
-// Importa os estilos globais gerados pelo TailwindCSS
+// Importa os estilos globais do TailwindCSS
 import './index.css'
 
-// Renderiza a aplicação dentro da div com id="root" do index.html
+// ✅ Importa o Provider do contexto do carrinho
+import { CarrinhoProvider } from './context/CarrinhoContext'
+
+// Renderiza a aplicação dentro da div com id="root"
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* Envolve toda a aplicação com o BrowserRouter para ativar o sistema de rotas */}
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    {/* Envolve tudo com CarrinhoProvider para o useCarrinho funcionar */}
+    <CarrinhoProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </CarrinhoProvider>
   </React.StrictMode>
 )
